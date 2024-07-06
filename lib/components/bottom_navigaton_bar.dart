@@ -74,7 +74,7 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
                                 Text(
                                   "Dashboard",
                                   style: TextStyle(
-                                      color: Constants.whiteColor,
+                                      color: Colors.white,
                                       fontWeight: FontWeight.bold),
                                 )
                               ],
@@ -118,7 +118,7 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
                                 Text(
                                   "Account",
                                   style: TextStyle(
-                                      color: Constants.whiteColor,
+                                      color: Colors.white,
                                       fontWeight: FontWeight.bold),
                                 )
                               ],

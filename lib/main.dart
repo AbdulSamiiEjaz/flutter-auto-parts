@@ -1,3 +1,5 @@
+import "dart:io";
+
 import "package:fzc_global_app/pages/barcode_scanner_page.dart";
 import "package:fzc_global_app/pages/box_allotment_page.dart";
 import "package:fzc_global_app/pages/login_page.dart";
@@ -7,6 +9,7 @@ import "package:flutter/material.dart";
 import "package:simple_barcode_scanner/simple_barcode_scanner.dart";
 
 void main() {
+  HttpOverrides.global = MyHttpOverrides();
   runApp(const MyApp());
 }
 
@@ -90,5 +93,14 @@ class PurchaseInvoicePage extends StatelessWidget {
       appBar: AppBar(title: const Text('Purchase Invoice')),
       body: const Center(child: Text('Purchase Invoice Page')),
     );
+  }
+}
+
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
   }
 }

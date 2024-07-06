@@ -2,6 +2,7 @@ import 'package:fzc_global_app/api/product_api.dart';
 import 'package:fzc_global_app/models/product_model.dart';
 import 'package:fzc_global_app/utils/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 
 class BarcodeScannerPage extends StatefulWidget {
   const BarcodeScannerPage({super.key});
@@ -12,21 +13,38 @@ class BarcodeScannerPage extends StatefulWidget {
 
 class _BarcodeScannerPageState extends State<BarcodeScannerPage> {
   late Future<List<ProductModel>> _products;
+  String barcode = '000000000001';
 
   @override
   void initState() {
     super.initState();
-    _products = getProducts();
+
+    Future.microtask(() async {
+      var res = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const SimpleBarcodeScannerPage(),
+        ),
+      );
+      setState(() {
+        if (res is String) {
+          if (res != "-1") {
+            barcode = res;
+            _products = getProducts(barcode);
+          }
+        }
+      });
+    });
+    _products = getProducts(barcode);
   }
 
   Future<void> _refreshProducts() async {
     setState(() {
-      _products = getProducts();
+      _products = getProducts(barcode);
     });
   }
 
-  Widget productCartd(String title, String itemCode, double price, int qty,
-      double totalAmount) {
+  Widget productCartd(ProductModel product) {
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
@@ -45,9 +63,11 @@ class _BarcodeScannerPageState extends State<BarcodeScannerPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            title,
+            product.customerName,
             style: const TextStyle(
-                color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
+                color: Constants.whiteColor,
+                fontWeight: FontWeight.bold,
+                fontSize: 20),
           ),
           const SizedBox(
             height: 10,
@@ -57,11 +77,24 @@ class _BarcodeScannerPageState extends State<BarcodeScannerPage> {
             children: [
               const Text(
                 "Item Code",
-                style: TextStyle(color: Colors.white),
+                style: TextStyle(color: Constants.whiteColor),
               ),
               Text(
-                itemCode,
-                style: const TextStyle(color: Colors.white),
+                product.itemCode,
+                style: const TextStyle(color: Constants.whiteColor),
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                "Item Name",
+                style: TextStyle(color: Constants.whiteColor),
+              ),
+              Text(
+                product.itemName,
+                style: const TextStyle(color: Constants.whiteColor),
               ),
             ],
           ),
@@ -70,11 +103,11 @@ class _BarcodeScannerPageState extends State<BarcodeScannerPage> {
             children: [
               const Text(
                 "Price",
-                style: TextStyle(color: Colors.white),
+                style: TextStyle(color: Constants.whiteColor),
               ),
               Text(
-                '${price.toString()} AED',
-                style: const TextStyle(color: Colors.white),
+                '${product.price.toString()} AED',
+                style: const TextStyle(color: Constants.whiteColor),
               ),
             ],
           ),
@@ -83,11 +116,11 @@ class _BarcodeScannerPageState extends State<BarcodeScannerPage> {
             children: [
               const Text(
                 "Qty",
-                style: TextStyle(color: Colors.white),
+                style: TextStyle(color: Constants.whiteColor),
               ),
               Text(
-                qty.toString(),
-                style: const TextStyle(color: Colors.white),
+                product.quantity.toString(),
+                style: const TextStyle(color: Constants.whiteColor),
               ),
             ],
           ),
@@ -96,11 +129,11 @@ class _BarcodeScannerPageState extends State<BarcodeScannerPage> {
             children: [
               const Text(
                 "Total Amount",
-                style: TextStyle(color: Colors.white),
+                style: TextStyle(color: Constants.whiteColor),
               ),
               Text(
-                '${totalAmount.toString()} AED',
-                style: const TextStyle(color: Colors.white),
+                '${(product.quantity * product.price).toDouble()} AED',
+                style: const TextStyle(color: Constants.whiteColor),
               ),
             ],
           ),
@@ -113,11 +146,11 @@ class _BarcodeScannerPageState extends State<BarcodeScannerPage> {
               TextButton.icon(
                 onPressed: () {
                   Navigator.pushNamed(context, "/boxallotment",
-                      arguments: itemCode);
+                      arguments: product);
                 },
-                label: const Text("Scan"),
-                icon: const Icon(Icons.qr_code),
-                iconAlignment: IconAlignment.start,
+                label: const Text("View Details"),
+                icon: const Icon(Icons.arrow_forward),
+                iconAlignment: IconAlignment.end,
                 style: TextButton.styleFrom(
                     // textStyle: const TextStyle(fontSize: 16),
                     backgroundColor: Colors.black,
@@ -152,12 +185,7 @@ class _BarcodeScannerPageState extends State<BarcodeScannerPage> {
                     physics: const BouncingScrollPhysics(),
                     itemCount: snapshot.data!.length,
                     itemBuilder: (BuildContext context, int index) {
-                      return productCartd(
-                          snapshot.data![index].title,
-                          snapshot.data![index].itemcode.toString(),
-                          snapshot.data![index].price,
-                          snapshot.data![index].qty,
-                          snapshot.data![index].totalAmount);
+                      return productCartd(snapshot.data![index]);
                     },
                     separatorBuilder: (context, index) => const SizedBox(
                       height: 10,

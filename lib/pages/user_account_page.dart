@@ -48,7 +48,10 @@ class _UserAccountPageState extends State<UserAccountPage> {
                         borderRadius: BorderRadius.circular(5)),
                     padding:
                         const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                    child: const Text("Yes"),
+                    child: const Text(
+                      "Yes",
+                      style: TextStyle(color: Colors.white),
+                    ),
                   )),
               GestureDetector(
                   onTap: () {
@@ -77,8 +80,8 @@ class _UserAccountPageState extends State<UserAccountPage> {
       body: Container(
         padding: const EdgeInsets.all(10),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Spacer(),
             GestureDetector(
               onTap: _logoutUser,
               child: Container(
@@ -90,7 +93,7 @@ class _UserAccountPageState extends State<UserAccountPage> {
                     child: Text(
                   "Logout",
                   style: TextStyle(
-                      color: Constants.whiteColor,
+                      color: Colors.white,
                       fontSize: 14,
                       fontWeight: FontWeight.bold),
                 )),

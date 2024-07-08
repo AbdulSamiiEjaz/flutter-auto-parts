@@ -13,7 +13,7 @@ class BarcodeScannerPage extends StatefulWidget {
 
 class _BarcodeScannerPageState extends State<BarcodeScannerPage> {
   late Future<List<ProductModel>> _products;
-  String barcode = '000000000001';
+  String barcode = '';
 
   @override
   void initState() {
@@ -30,7 +30,7 @@ class _BarcodeScannerPageState extends State<BarcodeScannerPage> {
         if (res is String) {
           if (res != "-1") {
             barcode = res;
-            _products = getProducts(barcode);
+            _products = getProducts(res);
           }
         }
       });
@@ -175,9 +175,69 @@ class _BarcodeScannerPageState extends State<BarcodeScannerPage> {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
               } else if (snapshot.hasError) {
-                return Text("Error ${snapshot.error}");
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const Text(
+                        "Something went wrong...",
+                        style: TextStyle(fontSize: 20),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.pushNamed(context, "/dashboard");
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 10),
+                          decoration: BoxDecoration(
+                              color: Constants.primaryColor,
+                              borderRadius: BorderRadius.circular(10)),
+                          child: const Text(
+                            "Go Back!",
+                            style: TextStyle(color: Colors.white, fontSize: 18),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                );
               } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                return const Text("No data found!");
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const Text(
+                        "Product not found...",
+                        style: TextStyle(fontSize: 20),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.pushNamed(context, "/dashboard");
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 10),
+                          decoration: BoxDecoration(
+                              color: Constants.primaryColor,
+                              borderRadius: BorderRadius.circular(10)),
+                          child: const Text(
+                            "Go Back!",
+                            style: TextStyle(color: Colors.white, fontSize: 18),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                );
               } else {
                 return RefreshIndicator(
                   onRefresh: _refreshProducts,

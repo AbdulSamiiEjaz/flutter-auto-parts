@@ -1,7 +1,9 @@
 import "dart:io";
 
+import "package:fzc_global_app/components/bottom_navigaton_bar.dart";
 import "package:fzc_global_app/pages/barcode_scanner_page.dart";
 import "package:fzc_global_app/pages/box_allotment_page.dart";
+import "package:fzc_global_app/pages/dashboard_page.dart";
 import "package:fzc_global_app/pages/login_page.dart";
 import "package:fzc_global_app/screens/splash_screen.dart";
 import "package:fzc_global_app/utils/constants.dart";
@@ -36,6 +38,7 @@ class MyApp extends StatelessWidget {
               iconTheme: IconThemeData(color: Constants.whiteColor))),
       routes: {
         "/": (context) => const CustomSplashScreen(),
+        "/dashboard": (context) => const CustomBottomNavigationBar(),
         "/auth/login": (context) => const LoginPage(),
         "/barcodescanner": (context) => const BarcodeScannerPage(),
         "/saleinvoice": (context) => const SaleInvoicePage(),

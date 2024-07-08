@@ -171,11 +171,13 @@ class _BoxAllotmentPageState extends State<BoxAllotmentPage> {
                                 gravity: ToastGravity.TOP_RIGHT,
                                 timeInSecForIosWeb: 1,
                                 backgroundColor:
-                                    const Color.fromARGB(20, 23, 143, 49),
+                                    Color.fromARGB(19, 16, 189, 53),
                                 textColor: Colors.white,
                                 fontSize: 16.0,
                               );
-                              Navigator.pushNamed(context, "/dashboard");
+                              if (mounted) {
+                                Navigator.pushNamed(context, "/dashboard");
+                              }
                             } else {
                               Fluttertoast.showToast(
                                 msg: response.error,
